@@ -1,5 +1,4 @@
 package com.library.demo.model;
-import com.library.demo.model.dtos.DataAuthorDto;
 import com.library.demo.model.dtos.DataBookDto;
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -13,11 +12,11 @@ public class Book
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long libroId;
+    private String libroId;
 
     private String title;
 
-    private Long isbn;
+    private String isbn;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Author author;
@@ -60,6 +59,9 @@ public class Book
 
     }
 
+    public Book(Book book, Author author) {
+    }
+
 
     public Long getId() {
         return id;
@@ -69,11 +71,11 @@ public class Book
         this.id = id;
     }
 
-    public Long getLibroId() {
+    public String getLibroId() {
         return libroId;
     }
 
-    public void setLibroId(Long libroId) {
+    public void setLibroId(String libroId) {
         this.libroId = libroId;
     }
 
@@ -85,11 +87,11 @@ public class Book
         this.title = title;
     }
 
-    public Long getIsbn() {
+    public String getIsbn() {
         return isbn;
     }
 
-    public void setIsbn(Long isbn) {
+    public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
 

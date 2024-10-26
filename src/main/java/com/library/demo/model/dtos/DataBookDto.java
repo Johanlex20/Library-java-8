@@ -7,7 +7,7 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DataBookDto {
 
-    @JsonAlias("id") Long libroId;
+    @JsonAlias("id") String libroId;
     @JsonAlias("title") String titulo;
     @JsonAlias("authors") List<DataAuthorDto> autores;
     @JsonAlias("subjects")  List<String> genero;
@@ -19,7 +19,7 @@ public class DataBookDto {
     public DataBookDto() {
     }
 
-    public Long getLibroId() {
+    public String getLibroId() {
         return libroId;
     }
 

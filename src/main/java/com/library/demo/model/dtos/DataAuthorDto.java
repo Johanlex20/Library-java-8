@@ -17,6 +17,7 @@ public class DataAuthorDto {
     public Integer getFechaNacimiento() {
         return fechaNacimiento;
     }
+
     public Integer getFechaFallecimiento() {
         return fechaFallecimiento;
     }
