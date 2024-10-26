@@ -1,15 +1,15 @@
-package com.library.demo.dao;
+package com.library.demo.model.dtos;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DataBookDAO {
+public class DataBookDto {
 
     @JsonAlias("id") Long libroId;
     @JsonAlias("title") String titulo;
-    @JsonAlias("authors") List<DataAuthorDAO> autor;
+    @JsonAlias("authors") List<DataAuthorDto> autor;
     @JsonAlias("subjects")  List<String> genero;
     @JsonAlias("languages") List<String> idioma;
     @JsonAlias("formats") private Map<String, String> formats;
@@ -17,7 +17,7 @@ public class DataBookDAO {
 
 
     // Constructor
-    public DataBookDAO() {
+    public DataBookDto() {
 
     }
 
@@ -30,7 +30,7 @@ public class DataBookDAO {
         return titulo;
     }
 
-    public List<DataAuthorDAO> getAutor() {
+    public List<DataAuthorDto> getAutor() {
         return autor;
     }
 

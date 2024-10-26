@@ -1,6 +1,5 @@
 package com.library.demo.config;
 import org.springframework.context.annotation.Configuration;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,15 +9,16 @@ import java.net.URL;
 @Configuration
 public class ConsumoApiGutendex {
 
+    private static final String BASE_URL = "https://gutendex.com/books/?search=";
+
     public String obtenerDatos(String title){
 
         StringBuilder response = new StringBuilder();
-        String apiUrl = "https://gutendex.com/books/?search=" + title;
+        String apiUrl = construirUrl(title);
 
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl).openConnection();
                 connection.setRequestMethod("GET");
-
                 int status = connection.getResponseCode();
 
                 if (status == 200) {
@@ -39,6 +39,9 @@ public class ConsumoApiGutendex {
         return response.toString();
     }
 
+    private String construirUrl(String title) {
+        return BASE_URL + title.replace(" ", "%20");
+    }
 
 }
 

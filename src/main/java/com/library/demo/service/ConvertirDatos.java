@@ -1,7 +1,7 @@
 package com.library.demo.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.library.demo.service.iConvertirDatos.iConvertirDatos;
+import com.library.demo.service.iService.iConvertirDatos;
 import org.springframework.stereotype.Service;
 
 @Service

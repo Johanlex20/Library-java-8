@@ -1,9 +1,9 @@
-package com.library.demo.dao;
+package com.library.demo.model.dtos;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DataAuthorDAO {
+public class DataAuthorDto {
     @JsonAlias("name") String nombre;
     @JsonAlias("birth_year") Integer cumpleanios;
     @JsonAlias("death_year") Integer fechaFallecimiento;
@@ -21,24 +21,13 @@ public class DataAuthorDAO {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public Integer getCumpleanios() {
         return cumpleanios;
-    }
-
-    public void setCumpleanios(Integer cumpleanios) {
-        this.cumpleanios = cumpleanios;
     }
 
     public Integer getFechaFallecimiento() {
         return fechaFallecimiento;
     }
 
-    public void setFechaFallecimiento(Integer fechaFallecimiento) {
-        this.fechaFallecimiento = fechaFallecimiento;
-    }
 
 }
