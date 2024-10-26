@@ -19,7 +19,8 @@ public class Book
 
     private Long isbn;
 
-    private String author;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Author author;
 
     private String category;
 
@@ -39,13 +40,11 @@ public class Book
 
     public Book(){}
 
-    public Book(DataBookDto dataBookDto){
+    public Book(DataBookDto dataBookDto, Author author){
         this.libroId = dataBookDto.getLibroId();
         this.title = dataBookDto.getTitulo();
         this.isbn = dataBookDto.getLibroId();
-        this.author = dataBookDto.getAutor().stream()
-                .map(DataAuthorDto::getNombre)
-                .reduce((a,b) -> a + ", " +b).orElse("Desconocido");
+        this.author = author;
         this.category = dataBookDto.getGenero().stream()
                 .map(g->g.split("--"))
                 .filter(parts ->parts.length > 1)
@@ -92,14 +91,6 @@ public class Book
 
     public void setIsbn(Long isbn) {
         this.isbn = isbn;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     public String getCategory() {
@@ -156,5 +147,12 @@ public class Book
 
     public void setCantidadDescargas(Long cantidadDescargas) {
         this.cantidadDescargas = cantidadDescargas;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+    public Author getAuthor() {
+        return author;
     }
 }

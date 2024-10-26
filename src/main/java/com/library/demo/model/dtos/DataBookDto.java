@@ -9,19 +9,16 @@ public class DataBookDto {
 
     @JsonAlias("id") Long libroId;
     @JsonAlias("title") String titulo;
-    @JsonAlias("authors") List<DataAuthorDto> autor;
+    @JsonAlias("authors") List<DataAuthorDto> autores;
     @JsonAlias("subjects")  List<String> genero;
     @JsonAlias("languages") List<String> idioma;
     @JsonAlias("formats") private Map<String, String> formats;
     @JsonAlias("download_count") Long cantidadDescargas;
 
 
-    // Constructor
     public DataBookDto() {
-
     }
 
-    // Getters y Setters
     public Long getLibroId() {
         return libroId;
     }
@@ -30,8 +27,8 @@ public class DataBookDto {
         return titulo;
     }
 
-    public List<DataAuthorDto> getAutor() {
-        return autor;
+    public List<DataAuthorDto> getAutores() {
+        return autores;
     }
 
     public List<String> getGenero() {
