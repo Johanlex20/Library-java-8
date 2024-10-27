@@ -1,5 +1,6 @@
 package com.library.demo.service;
 import com.library.demo.dao.iAuthorDAO;
+import com.library.demo.exception.BookNotFoundException;
 import com.library.demo.service.iService.iBookService;
 import com.library.demo.dao.iBookDAO;
 import com.library.demo.model.Author;
@@ -8,7 +9,6 @@ import com.library.demo.model.dtos.DataAuthorDto;
 import com.library.demo.model.dtos.DataBookDto;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class BookService implements iBookService {
            DataAuthorDto authorDto = authorsDto.isEmpty() ? null : authorsDto.get(0);
 
             if (authorDto  == null){
-                throw new RuntimeException("No se encontró información del autor.");
+                throw new BookNotFoundException("No se encontró información del autor.");
             }
 
             Author author = new Author(
@@ -101,7 +101,7 @@ public class BookService implements iBookService {
 
     @Override
     public Book getBookById(Long id) {
-        return bookDAO.findById(id).orElseThrow(()->new RuntimeException("Libro ID no encontrado"));
+        return bookDAO.findById(id).orElseThrow(()->new BookNotFoundException("Libro ID no encontrado"));
     }
 
     @Override
@@ -128,7 +128,7 @@ public class BookService implements iBookService {
             book.setAvailable(false);
             bookDAO.save(book);
         }else {
-            throw new RuntimeException("El libro Id: "+  id + " ya se encuentra deshabilitado");
+            throw new BookNotFoundException("El libro Id: "+  id + " ya se encuentra deshabilitado");
         }
 
     }
