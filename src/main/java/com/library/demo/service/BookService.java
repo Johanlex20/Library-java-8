@@ -1,4 +1,5 @@
 package com.library.demo.service;
+import com.library.demo.dao.iAuthorDAO;
 import com.library.demo.service.iService.iBookService;
 import com.library.demo.dao.iBookDAO;
 import com.library.demo.model.Author;
@@ -14,10 +15,18 @@ public class BookService implements iBookService {
 
     private final ApiService apiService;
     private final iBookDAO bookDAO;
+    private final iAuthorDAO authorDAO;
 
-    public BookService(ApiService apiService, iBookDAO bookDAO) {
+    public BookService(ApiService apiService, iBookDAO bookDAO, iAuthorDAO authorDAO) {
         this.apiService = apiService;
         this.bookDAO = bookDAO;
+        this.authorDAO = authorDAO;
+    }
+
+    private Author findOrCreateAutor(Author author){
+        return authorDAO.findByNameAuthor(
+                author.getNameAuthor()
+        ).orElseGet(() -> authorDAO.save(author));
     }
 
     public Book findBookApi(String title){
@@ -33,10 +42,20 @@ public class BookService implements iBookService {
         if (bookDto != null){
 
            List<DataAuthorDto> authorsDto = bookDto.getAutores();
-            DataAuthorDto authorDto = authorsDto.isEmpty() ? null : authorsDto.get(0);
-            Author author = new Author(authorDto.getNombre(), authorDto.getFechaNacimiento(), authorDto.getFechaFallecimiento());
+           DataAuthorDto authorDto = authorsDto.isEmpty() ? null : authorsDto.get(0);
 
-            Book book = new Book(bookDto, author);
+            if (authorDto  == null){
+                throw new RuntimeException("No se encontró información del autor.");
+            }
+
+            Author author = new Author(
+                    authorDto.getNombre(),
+                    authorDto.getFechaNacimiento(),
+                    authorDto.getFechaFallecimiento());
+
+            Author savedAuthor = findOrCreateAutor(author);
+
+            Book book = new Book(bookDto, savedAuthor);
 
             return bookDAO.save(book);
         }else {
@@ -55,20 +74,22 @@ public class BookService implements iBookService {
         }
 
         try{
+            Author savedAuthor = findOrCreateAutor(book.getAuthor());
+
             Book newBook = new Book();
 
             newBook.setId(book.getId());
             newBook.setTitle(book.getTitle());
             newBook.setLibroId(book.getLibroId());
             newBook.setAvailable(true);
-            newBook.setAuthor(book.getAuthor());
+            newBook.setAuthor(savedAuthor);
             newBook.setCategory(book.getCategory());
             newBook.setPublicationDate(book.getPublicationDate());
             newBook.setPrice(book.getPrice());
             newBook.setIdioma(book.getIdioma());
             newBook.setFormats(book.getFormats());
             newBook.setCantidadDescargas(book.getCantidadDescargas());
-            return bookDAO.save(book);
+            return bookDAO.save(newBook);
         }catch (DataAccessException e){
             throw new RuntimeException("Error al crear el libro");
         }
