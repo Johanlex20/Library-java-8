@@ -18,7 +18,7 @@ public class Book
 
     private String isbn;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Author author;
 
     private String category;

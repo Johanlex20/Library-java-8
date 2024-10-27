@@ -1,5 +1,7 @@
 package com.library.demo.service.iService;
 import com.library.demo.model.Book;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface iBookService{
@@ -10,13 +12,9 @@ public interface iBookService{
     void deleteBook(Long id);
     void desactviarBook(Long id);
     Book updateBook(Long id, Book book);
-
-
-
-   /*
     List<Book> findBooksByTitle(String titlePart);
     List<Book> findBooksByPriceRange(BigDecimal min, BigDecimal max);
     List<Book> findBooksByAuthor(String author);
-    List<Book> getAllBooksSortedByPublicationDate();
-*/
+    List<Book> getAllBooksSortedByPublicationDate(int year);
+
 }

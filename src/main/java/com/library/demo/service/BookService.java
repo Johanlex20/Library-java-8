@@ -8,6 +8,8 @@ import com.library.demo.model.dtos.DataAuthorDto;
 import com.library.demo.model.dtos.DataBookDto;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -152,5 +154,23 @@ public class BookService implements iBookService {
         return bookDAO.save(bookUpdate);
     }
 
+    @Override
+    public List<Book> findBooksByTitle(String titlePart) {
+        return bookDAO.findBookByTitle(titlePart);
+    }
 
+    @Override
+    public List<Book> findBooksByPriceRange(BigDecimal min, BigDecimal max) {
+        return bookDAO.findBooksByPriceRange(min,max);
+    }
+
+    @Override
+    public List<Book> findBooksByAuthor(String author) {
+        return bookDAO.findBookByAuthor(author);
+    }
+
+
+    public List<Book> getAllBooksSortedByPublicationDate(int year) {
+        return bookDAO.findBooksByPublicationYear(year);
+    }
 }
