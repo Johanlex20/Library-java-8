@@ -18,7 +18,8 @@ public class Book
 
     private String isbn;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "author_id", nullable = false)
     private Author author;
 
     private String category;

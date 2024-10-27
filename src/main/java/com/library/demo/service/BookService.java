@@ -11,6 +11,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService implements iBookService {
@@ -25,11 +26,12 @@ public class BookService implements iBookService {
         this.authorDAO = authorDAO;
     }
 
-    private Author findOrCreateAutor(Author author){
+
+    private Author findOrCreateAutor(Author author) {
         return authorDAO.findByNameAuthor(
-                author.getNameAuthor()
-        ).orElseGet(() -> authorDAO.save(author));
+                author.getNameAuthor()).orElseGet(() -> authorDAO.save(author));
     }
+
 
     public Book findBookApi(String title){
 
@@ -61,7 +63,7 @@ public class BookService implements iBookService {
 
             return bookDAO.save(book);
         }else {
-            return null;
+            throw new BookNotFoundException("No se encontró el libro con el título: " + title);
         }
     }
 
@@ -74,15 +76,16 @@ public class BookService implements iBookService {
         if (bookExists){
             throw new RuntimeException("El libro ya existe!");
         }
-
+        Book newBook = null;
         try{
             Author savedAuthor = findOrCreateAutor(book.getAuthor());
 
-            Book newBook = new Book();
+            newBook = new Book();
 
             newBook.setId(book.getId());
             newBook.setTitle(book.getTitle());
             newBook.setLibroId(book.getLibroId());
+            newBook.setIsbn(book.getIsbn());
             newBook.setAvailable(true);
             newBook.setAuthor(savedAuthor);
             newBook.setCategory(book.getCategory());
@@ -95,8 +98,6 @@ public class BookService implements iBookService {
         }catch (DataAccessException e){
             throw new RuntimeException("Error al crear el libro");
         }
-
-
     }
 
     @Override
@@ -111,30 +112,34 @@ public class BookService implements iBookService {
 
     @Override
     public void deleteBook(Long id) {
-        Book bookDeleted = getBookById(id);
-        boolean existe = bookDeleted.isAvailable();
+        Book book = getBookById(id);
+        bookDAO.deleteById(book.getId());
 
-        if (existe){
-            bookDAO.deleteById(id);
-        }else {
-            throw new RuntimeException("No esposible eliminar ya que no existe");
-        }
     }
-
+/*
     @Override
     public void desactviarBook(Long id) {
         Book book = getBookById(id);
-        if (book.isAvailable()){
-            book.setAvailable(false);
-            bookDAO.save(book);
-        }else {
+        if (!book.isAvailable()){
             throw new BookNotFoundException("El libro Id: "+  id + " ya se encuentra deshabilitado");
         }
-
+        book.setAvailable(false);
+        bookDAO.save(book);
     }
+ */
 
     @Override
-    public Book updateBook(Long id, Book book) {
+    public void desactviarBook(Long id) {
+        Book book = bookDAO.findById(id)
+                .filter(Book::isAvailable).orElseThrow(()-> new RuntimeException("El libro con Id "+ id + "esta desactivado"));
+        book.setAvailable(false);
+        bookDAO.save(book);
+    }
+
+
+    /*
+    @Override
+   public Book updateBook(Long id, Book book) {
         Book bookUpdate = getBookById(id);
 
         if (bookUpdate != null){
@@ -153,24 +158,69 @@ public class BookService implements iBookService {
         }
         return bookDAO.save(bookUpdate);
     }
+*/
 
     @Override
+   public Book updateBook(Long id, Book book) {
+       return bookDAO.findById(id).map(bookUpdate ->{
+           bookUpdate.setTitle(book.getTitle());
+           bookUpdate.setLibroId(book.getLibroId());
+           bookUpdate.setAvailable(true);
+           bookUpdate.setAuthor(book.getAuthor());
+           bookUpdate.setCategory(book.getCategory());
+           bookUpdate.setPublicationDate(book.getPublicationDate());
+           bookUpdate.setPrice(book.getPrice());
+           bookUpdate.setIdioma(book.getIdioma());
+           bookUpdate.setFormats(book.getFormats());
+           bookUpdate.setCantidadDescargas(book.getCantidadDescargas());
+           return bookDAO.save(bookUpdate);
+       }).orElseThrow(()-> new BookNotFoundException("libro ID no encontrado"));
+    }
+
+
+    /*@Override
     public List<Book> findBooksByTitle(String titlePart) {
         return bookDAO.findBookByTitle(titlePart);
     }
-
+*/
+    @Override
+    public List<Book> findBooksByTitle(String titlePart) {
+        return bookDAO.findAll()
+                .stream()
+                .filter(book -> book.getTitle().toLowerCase().contains(titlePart.toLowerCase()))
+                .collect(Collectors.toList());
+    }
     @Override
     public List<Book> findBooksByPriceRange(BigDecimal min, BigDecimal max) {
-        return bookDAO.findBooksByPriceRange(min,max);
+        return bookDAO.findAll().stream()
+                .filter(book -> book.getPrice().compareTo(min) >= 0 && book.getPrice().compareTo(max) <= 0).collect(Collectors.toList());
     }
 
-    @Override
+    /*@Override
     public List<Book> findBooksByAuthor(String author) {
         return bookDAO.findBookByAuthor(author);
     }
+*/
+    @Override
+    public List<Book> findBooksByAuthor(String author) {
+        return bookDAO.findAll()
+                .stream()
+                .filter(book -> book.getAuthor().getNameAuthor().toLowerCase()
+                        .contains(author.toLowerCase())).collect(Collectors.toList());
+    }
 
-
+    /*
+    @Override
     public List<Book> getAllBooksSortedByPublicationDate(int year) {
         return bookDAO.findBooksByPublicationYear(year);
+    }
+    */
+
+    @Override
+    public List<Book> getAllBooksSortedByPublicationDate(int year) {
+        return bookDAO.findAll()
+                .stream()
+                .filter(book -> book.getPublicationDate().getYear() == year
+                        ).collect(Collectors.toList());
     }
 }
