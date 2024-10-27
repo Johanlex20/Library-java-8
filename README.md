@@ -70,7 +70,7 @@ La estructura del proyecto esta basada en una arquitectura de tipo Modelo-Vista-
 # 🌟   INSTRUCIÓNES MANIPULACIÓN PROYECTO CRUD LIBROS   🌟
 
 ## 🌟 Clonar el repositorio: 🌟
-comando : git clone https://github.com/tu-usuario/nombre-del-repositorio.git
+comando : git clone [https://github.com/Johanlex20/Libros-Crud-Java-8-Spring_2.7.18-Gradle_6.0.git](https://github.com/Johanlex20/Libros-Crud-Java-8-Spring_2.7.18-Gradle_6.0.git)
 cd nombre-del-repositorio
 
 ## 🌟 Compilar el proyecto: 🌟
